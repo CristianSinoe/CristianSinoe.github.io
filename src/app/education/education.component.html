@@ -1,1 +1,5 @@
-<p>education works!</p>
+<div *ngFor="let education of educationList">
+  <p>School: {{ education.school }}</p>
+  <p>Training: {{ education.training }}</p>
+  <p>Licenses: {{ education.licenses }}</p>
+</div>
