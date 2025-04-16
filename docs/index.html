@@ -1,13 +1,59 @@
 <!doctype html>
 <html lang="en" data-critters-container>
-<head>
-  <meta charset="utf-8">
-  <title>Mycv</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-<link rel="stylesheet" href="styles-5INURTSO.css"></head>
-<body>
-  <app-root></app-root>
-<link rel="modulepreload" href="chunk-4ZHOUZTK.js"><script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-UEPL7WEJ.js" type="module"></script></body>
+  <head>
+    <meta charset="utf-8">
+    <title>MY CV SINOE RUIZ</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <link rel="stylesheet" href="styles-WMUWZIOQ.css">
+    <link rel="stylesheet" href="styles-5INURTSO.css">
+
+    <style>
+      .cursor-trail {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        pointer-events: none;
+        background: #FFD700;
+        box-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700;
+        animation: fadeOut 0.8s ease-out forwards;
+        z-index: 9999;
+      }
+
+      @keyframes fadeOut {
+        0% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(2);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <app-root></app-root>
+
+    <script>
+      document.addEventListener('mousemove', function (e) {
+        const trail = document.createElement('div');
+        trail.className = 'cursor-trail';
+        trail.style.left = e.pageX + 'px';
+        trail.style.top = e.pageY + 'px';
+        document.body.appendChild(trail);
+
+        setTimeout(() => {
+          trail.remove();
+        }, 800);
+      });
+    </script>
+
+    <link rel="modulepreload" href="chunk-4ZHOUZTK.js">
+    <script src="polyfills-FFHMD2TL.js" type="module"></script>
+    <script src="main-53ZEWAM6.js" type="module"></script>
+  </body>
 </html>
