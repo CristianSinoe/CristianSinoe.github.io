@@ -1,6 +1,7 @@
 <h2>EDUCATION</h2>
-<div *ngFor="let education of educationList">
-  <p>SCHOOL: {{ education.school }}</p>
-  <p>TRAINING: {{ education.training }}</p>
-  <p>LICENSES: {{ education.licenses }}</p>
+<div *ngFor="let education of educationList" class="education-card">
+  <h3>SCHOOL: {{ education.school }}</h3>
+  <p><strong>TRAINING:</strong> {{ education.training }}</p>
+  <p><strong>LICENSES:</strong> {{ education.licenses }}</p>
 </div>
+
