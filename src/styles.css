@@ -235,4 +235,10 @@ body {
     text-shadow: 0 0 8px #FFD700;
   }
   
+  img:hover {
+  transform: scale(1.05); 
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); 
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
   
