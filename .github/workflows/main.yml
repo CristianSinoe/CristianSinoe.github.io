@@ -20,7 +20,7 @@ jobs:
         node-version: '20'
 
     - name: Instalar dependencias
-      run: npm ci
+      run: npm install
 
     #- name: Ejecutar pruebas
     #  run: npm test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
