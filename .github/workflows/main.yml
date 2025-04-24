@@ -23,7 +23,7 @@ jobs:
       run: npm install
 
     - name: Ejecutar pruebas
-      run: npm test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+      run: npm test
 
     - name: Construir Angular
       run: npm run build --output-path=docs
