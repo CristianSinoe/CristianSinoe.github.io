@@ -1,0 +1,47 @@
+name: Angular_DockerImage
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  angular_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v3
+
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Instalar dependencias
+      run: npm ci
+
+    - name: Ejecutar pruebas
+      run: npm test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+
+    - name: Construir Angular
+      run: npm run build --output-path=docs
+
+    - name: Login a Docker Hub
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+    - name: Ejecutar contenedor base
+      run: docker run -d --name http_base httpd
+
+    - name: Copiar contenido Angular al contenedor
+      run: docker cp docs/. http_base:/usr/local/apache2/htdocs
+
+    - name: Crear imagen personalizada
+      run: docker commit --change "ENV MODEL_NAME http_base" http_base ${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}
+
+    - name: Subir imagen a Docker Hub
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}
