@@ -9,51 +9,44 @@ on:
 jobs:
   angular_deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout del código
-      uses: actions/checkout@v3
+      - name: Checkout del código
+        uses: actions/checkout@v3
 
-    - name: Use Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
-    - name: Instalar dependencias
-      run: npm install
+      - name: Instalar dependencias
+        run: npm install
 
-    #- name: Ejecutar pruebas
-    #  run: npm test
+      - name: Construir Angular
+        run: npm run build --output-path=docs
 
-    - name: Construir Angular
-      run: npm run build --output-path=docs
+      - name: Verificar archivos en carpeta docs
+        run: ls -la docs
 
-    - name: Verificar archivos en carpeta docs
-      run: ls -la docs
+      - name: Login a Docker Hub
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
-    - name: Login a Docker Hub
-      env:
-        DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - name: Ejecutar contenedor base
+        run: docker run -d --name http_base httpd
 
-    - name: Ejecutar contenedor base
-      run: docker run -d --name http_base httpd
+      - name: Copiar contenido Angular al contenedor
+        run: docker cp docs/. http_base:/usr/local/apache2/htdocs
 
-    - name: Copiar contenido Angular al contenedor
-      run: docker cp docs/. http_base:/usr/local/apache2/htdocs
+      - name: Verificar contenido en contenedor
+        run: docker exec http_base ls /usr/local/apache2/htdocs
 
-    - name: Verificar contenido en contenedor
-      run: docker exec http_base ls /usr/local/apache2/htdocs
+      - name: Crear imagen Docker personalizada
+        run: |
+          echo "Creando imagen personalizada..."
+          docker commit http_base mycv_base
+          docker tag mycv_base ${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}
 
-    - name: DEBUG usuario Docker (temporal)
-      run: echo "El usuario Docker es: ${{ secrets.DOCKER_USERNAME }}"
-
-    - name: Crear imagen Docker personalizada
-      run: |
-        echo "Creando imagen personalizada..."
-        docker commit http_base mycv_base
-        docker tag mycv_base ${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}
-
-    - name: Subir imagen a Docker Hub
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}
+      - name: Subir imagen a Docker Hub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}
