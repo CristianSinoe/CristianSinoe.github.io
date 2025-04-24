@@ -14,19 +14,19 @@ jobs:
     - name: Checkout del código
       uses: actions/checkout@v3
 
-    - name: Use Node.js
+    - name: Setup de Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '20'
 
     - name: Instalar dependencias
-      run: npm install
+      run: npm ci
 
     #- name: Ejecutar pruebas
-    #  run: npm test
+    #  run: npm test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
 
-    - name: Construir Angular
-      run: npm run build --output-path=docs
+    - name: Build Angular
+      run: npm run build -- --output-path=docs
 
     - name: Login a Docker Hub
       env:
@@ -34,16 +34,16 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
-    - name: Ejecutar contenedor base
+    - name: Descargar y ejecutar imagen base de Docker
       run: docker run -d --name http_base httpd
 
-    - name: Copiar contenido Angular al contenedor
+    - name: Copiar modelo (docs) a la imagen Docker
       run: docker cp docs/. http_base:/usr/local/apache2/htdocs
 
-    - name: Crear imagen personalizada
+    - name: Crear imagen Docker personalizada
       run: |
         echo "Creando imagen personalizada..."
-        docker commit http_base ${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}
+        docker commit --change "ENV MODEL_NAME http_base" http_base ${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}
 
     - name: Subir imagen a Docker Hub
       run: docker push ${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}
