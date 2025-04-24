@@ -42,6 +42,9 @@ jobs:
       - name: Verificar contenido en contenedor
         run: docker exec http_base ls /usr/local/apache2/htdocs
 
+      - name: Verificar nombre de imagen y tag
+        run: echo "${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}"
+
       - name: Crear imagen Docker personalizada
         run: |
           echo "Creando imagen personalizada..."
