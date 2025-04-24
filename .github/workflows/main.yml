@@ -22,7 +22,6 @@ jobs:
     - name: Instalar dependencias
       run: npm install
 
-    # Puedes descomentar esta parte si tienes pruebas configuradas
     #- name: Ejecutar pruebas
     #  run: npm test
 
@@ -44,7 +43,7 @@ jobs:
     - name: Crear imagen personalizada
       run: |
         echo "Creando imagen personalizada..."
-        docker commit --change "ENV MODEL_NAME=http_base" http_base ${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}
+        docker commit http_base ${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}
 
     - name: Subir imagen a Docker Hub
       run: docker push ${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}
