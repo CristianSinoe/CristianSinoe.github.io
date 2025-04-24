@@ -28,6 +28,9 @@ jobs:
     - name: Construir Angular
       run: npm run build --output-path=docs
 
+    - name: Verificar archivos en carpeta docs
+      run: ls -la docs
+
     - name: Login a Docker Hub
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
@@ -40,8 +43,12 @@ jobs:
     - name: Copiar contenido Angular al contenedor
       run: docker cp docs/. http_base:/usr/local/apache2/htdocs
 
+    - name: Verificar contenido en contenedor
+      run: docker exec http_base ls /usr/local/apache2/htdocs
+
     - name: Crear imagen Docker personalizada
       run: |
+        set -x
         echo "Creando imagen personalizada..."
         docker commit http_base mycv_base
         docker tag mycv_base ${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}
