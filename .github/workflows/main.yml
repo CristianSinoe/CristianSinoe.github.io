@@ -23,7 +23,7 @@ jobs:
       run: npm install
 
     #- name: Ejecutar pruebas
-     # run: npm testd
+     # run: npm test
 
     - name: Construir Angular
       run: npm run build --output-path=docs
