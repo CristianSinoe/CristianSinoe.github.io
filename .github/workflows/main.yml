@@ -46,9 +46,11 @@ jobs:
     - name: Verificar contenido en contenedor
       run: docker exec http_base ls /usr/local/apache2/htdocs
 
+    - name: DEBUG usuario Docker (temporal)
+      run: echo "El usuario Docker es: ${{ secrets.DOCKER_USERNAME }}"
+
     - name: Crear imagen Docker personalizada
       run: |
-        set -x
         echo "Creando imagen personalizada..."
         docker commit http_base mycv_base
         docker tag mycv_base ${{ secrets.DOCKER_USERNAME }}/mycv:${{ github.sha }}
